@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini Cashier V3</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-mark">MC</div>
+    <div><h1>Mini Cashier <span>V3</span></h1><p>Simple point of sale</p></div>
+    <div class="status"><span></span> Sistem siap</div>
+  </header>
+
+  <main class="layout">
+    <section class="panel catalog-panel">
+      <div class="section-heading"><div><p class="eyebrow">PRODUK</p><h2>Katalog barang</h2></div><span class="count">{{ katalog|length }} item</span></div>
+      <div class="catalog-grid">
+        {% for barang in katalog %}
+        <article class="product-card">
+          <div class="product-icon">{{ barang.nama[0] }}</div>
+          <div class="product-info"><h3>{{ barang.nama }}</h3><p>Rp{{ "{:,}".format(barang.harga).replace(",", ".") }}</p><small>Kode {{ barang.kode }}</small></div>
+          <button class="add-btn" onclick="quickAdd({{ barang.kode }})" aria-label="Tambah {{ barang.nama }}">+</button>
+        </article>
+        {% endfor %}
+      </div>
+      <div class="manual-add">
+        <label for="kode">Kode barang</label><input id="kode" type="number" min="1" placeholder="Contoh: 1">
+        <label for="jumlah">Qty</label><input id="jumlah" type="number" min="1" value="1">
+        <button class="primary" onclick="addFromForm()">Tambah ke keranjang</button>
+      </div>
+    </section>
+
+    <section class="panel cart-panel">
+      <div class="section-heading"><div><p class="eyebrow">TRANSAKSI</p><h2>Keranjang</h2></div><button class="text-btn" onclick="clearCart()">Kosongkan</button></div>
+      <div id="cart-items" class="cart-items"><div class="empty">Keranjang masih kosong.<br><small>Pilih produk untuk memulai.</small></div></div>
+      <div class="total-row"><span>Total sementara</span><strong id="cart-total">Rp0</strong></div>
+
+      <div class="checkout-form">
+        <h3>Checkout</h3>
+        <label for="member">Status member</label>
+        <select id="member"><option value="tidak">Tidak</option><option value="iya">Iya</option></select>
+        <label for="uang">Uang pelanggan (Rp)</label><input id="uang" type="number" min="1" placeholder="Masukkan uang pembayaran">
+        <button class="primary checkout-btn" onclick="checkout()">Bayar & cetak struk</button>
+        <p id="message" class="message" role="status"></p>
+      </div>
+    </section>
+  </main>
+
+  <section id="receipt-area" class="receipt-wrap hidden">
+    <div id="receipt" class="receipt"></div>
+    <button class="primary print-btn" onclick="window.print()">Cetak struk</button>
+  </section>
+  <footer>Mini Cashier V3 · Demo project</footer>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
